@@ -1,9 +1,8 @@
 # Sesame installer shell script
 
-SESAME_TAR=sesamesim-1.5.1.tar.gz
-MAPPINGMODULE_TAR=mappingmodule.tgz
-BASE_URL=http://pc-vlab09.science.uva.nl/files/
-
+SESAME_TAR=sesame-1.5.2.tar.gz
+MAPPINGMODULE_TAR=mappingmodule-1.0.tar.gz
+BASE_URL=https://csa.science.uva.nl/download/sesame/
 
 # Will contain export to set sesame environment
 SESAME_ENV_FILE=sesame.env
@@ -61,13 +60,13 @@ check() {
 # This function downloads the flow components. Requires Internet access
 get_and_unpack_packages() {
 
-    echo "wget -q -nc $BASE_URL/$SESAME_TAR"
-    wget -q -nc $BASE_URL/$SESAME_TAR
+    echo "wget -q -nc $BASE_URL/sesame/$SESAME_TAR"
+    wget -q -nc $BASE_URL/sesame/$SESAME_TAR
     check $? "Cannot download $SESAME_TAR file"
     tar xzf $SESAME_TAR
 
-    echo "wget -q -nc $BASE_URL/$MAPPINGMODULE_TAR"
-    wget -q -nc $BASE_URL/$MAPPINGMODULE_TAR
+    echo "wget -q -nc $BASE_URL/mappingmodule/$MAPPINGMODULE_TAR"
+    wget -q -nc $BASE_URL/mappingmodule/$MAPPINGMODULE_TAR
     check $? "Cannot download $MAPPINGMODULE_TAR file"
     tar xzf $MAPPINGMODULE_TAR
 }
