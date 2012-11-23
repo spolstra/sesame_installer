@@ -1,9 +1,11 @@
+# Sesame installer shell script
+
 SESAME_TAR=sesamesim-1.5.1.tar.gz
 MAPPINGMODULE_TAR=mappingmodule.tgz
 BASE_URL=http://pc-vlab09.science.uva.nl/files/
 
 # TODO needs to be a parameter. (check parameters)
-INSTALLDIR=/home/spolstra/opt2 
+INSTALLDIR=/home/spolstra/opt 
 
 # Will contain export to set sesame environment
 SESAME_ENV_FILE=sesame.env
@@ -39,7 +41,7 @@ setup_mappingmodule() {
     python setup.py install --prefix $INSTALLDIR --record installed-files.txt
     
     # extract install directory from installed-files.txt
-    location=`sed  s/site-packages.*// installed-files.txt | head -1`
+    location=`sed  s/site-packages.*/site-packages/ installed-files.txt | head -1`
     # Append export to SESAME_ENV_FILE
     echo "export PYTHONPATH+=:$location" >> ../$SESAME_ENV_FILE
     # Also needed for installation
@@ -53,10 +55,11 @@ setup_sesame() {
     cd `basename sesamesim-1.5.1.tar.gz .tar.gz`
 
     # Add environment to env file.
-    echo "export \$PATH=$INSTALLDIR/bin:\$PATH" >> ../$SESAME_ENV_FILE
+    echo "export PATH=$INSTALLDIR/bin:\$PATH" >> ../$SESAME_ENV_FILE
     # Also needed during installation.
-    export $PATH=$INSTALLDIR/bin:$PATH
+    export PATH=$INSTALLDIR/bin:$PATH
     
+    echo "HELLO:" $PYTHONPATH
     ./configure --prefix=$INSTALLDIR
     # TODO check succes
     make
