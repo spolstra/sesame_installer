@@ -4,11 +4,49 @@ SESAME_TAR=sesamesim-1.5.1.tar.gz
 MAPPINGMODULE_TAR=mappingmodule.tgz
 BASE_URL=http://pc-vlab09.science.uva.nl/files/
 
-# TODO needs to be a parameter. (check parameters)
-INSTALLDIR=/home/spolstra/opt 
 
 # Will contain export to set sesame environment
 SESAME_ENV_FILE=sesame.env
+
+print_deps() {
+cat << EOF
+Sesame depends on the following Ubuntu packages:
+
+gcc
+g++
+libtool
+libltdl-dev
+python-networkx
+python-lxml
+python-argparse
+libxerces-c-dev
+libperl-dev
+bison
+flex
+EOF
+}
+
+print_usage() {
+cat << EOF
+Usage $0
+
+This script installs the Sesame framework.
+
+Source code will be retrieved from:     $BASE_URL
+Default installation directory is:      $INSTALLDIR
+
+For additional help see also:
+https://csa.science.uva.nl/trac/dse/wiki/SesameInstallationGuide
+
+Script Options:
+    -h             Show this message
+    -p DIR         Install into DIR   
+    -l             List dependencies
+
+EOF
+}
+
+
 
 # Takes two parameters. The response from a command and error message
 # If the response is not zero, print the error message and exit
@@ -73,21 +111,27 @@ setup_sesame() {
 # Start of Main 
 #---------------------------------------------------------------------- 
 
-# TODO: Tell user to check dependencies
-#    gcc
-#    g++
-#    libtool
-#    libltdl-dev
-#    python-networkx
-#    python-lxml
-#    python-argparse
-#    libxerces-c-dev
-#    libperl-dev
-#    bison
-#    flex 
+# Default installation directory
+INSTALLDIR=$HOME/opt 
 
-# link them to https://csa.science.uva.nl/trac/dse/wiki/SesameInstallationGuide
-# TODO: check is that link public?
+while getopts "hlp:" OPTION; do
+    case $OPTION in
+    h)
+        print_usage
+        exit 0
+        ;;
+    l)
+        print_deps
+        exit 0
+        ;;
+    p)
+        INSTALLDIR=$OPTARG
+        # TODO need to create this dir?
+        ;;
+    esac
+done
+
+echo "Sesame will be installed in $INSTALLDIR"
 
 # Download packages and unpack
 get_and_unpack_packages
