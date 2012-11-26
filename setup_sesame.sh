@@ -1,5 +1,10 @@
 # Sesame installer shell script
 
+# Script options
+set -e  # Exit on failure
+set -u  # Exit on use of uninitalised variable
+
+# Installer options
 SESAME_TAR=sesamesim-1.5.2.tar.gz
 MAPPINGMODULE_TAR=mappingmodule-1.0.tar.gz
 BASE_URL=https://csa.science.uva.nl/download/sesame/
