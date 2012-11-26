@@ -1,6 +1,6 @@
 # Sesame installer shell script
 
-SESAME_TAR=sesame-1.5.2.tar.gz
+SESAME_TAR=sesamesim-1.5.2.tar.gz
 MAPPINGMODULE_TAR=mappingmodule-1.0.tar.gz
 BASE_URL=https://csa.science.uva.nl/download/sesame/
 
@@ -59,14 +59,14 @@ check() {
 
 # This function downloads the flow components. Requires Internet access
 get_and_unpack_packages() {
-
-    echo "wget -q -nc $BASE_URL/sesame/$SESAME_TAR"
-    wget -q -nc $BASE_URL/sesame/$SESAME_TAR
+    WGET_OPTS="--no-check-certificate -q -nc"
+    echo "wget $WGET_OPTS $BASE_URL/sesame/$SESAME_TAR"
+    wget $WGET_OPTS $BASE_URL/sesame/$SESAME_TAR
     check $? "Cannot download $SESAME_TAR file"
     tar xzf $SESAME_TAR
 
-    echo "wget -q -nc $BASE_URL/mappingmodule/$MAPPINGMODULE_TAR"
-    wget -q -nc $BASE_URL/mappingmodule/$MAPPINGMODULE_TAR
+    echo "wget $WGET_OPTS $BASE_URL/mappingmodule/$MAPPINGMODULE_TAR"
+    wget $WGET_OPTS $BASE_URL/mappingmodule/$MAPPINGMODULE_TAR
     check $? "Cannot download $MAPPINGMODULE_TAR file"
     tar xzf $MAPPINGMODULE_TAR
 }
@@ -74,22 +74,27 @@ get_and_unpack_packages() {
 # Runs setup of mappingmodule
 # SESAME_ENV_FILE is appended with PYTHONPATH definition
 setup_mappingmodule() {
-    cd `basename $MAPPINGMODULE_TAR .tgz`
-    python setup.py install --prefix $INSTALLDIR --record installed-files.txt
+    cd `basename $MAPPINGMODULE_TAR .tar.gz`
+
+    # PYTHONPATH needs to be set to the install dir otherwise the install
+    # will fail.
+    # TODO: How to detect lib64 install?
+    python_version=`python -V 2>&1 | sed 's/Python \([0-9]\.[0-9]\).*/\1/'`
+    location=$INSTALLDIR/lib/python${python_version}/site-packages
+
+    export PYTHONPATH+=:$location
+
+    python setup.py install --prefix $INSTALLDIR
     
-    # extract install directory from installed-files.txt
-    location=`sed  s/site-packages.*/site-packages/ installed-files.txt | head -1`
     # Append export to SESAME_ENV_FILE
     echo "export PYTHONPATH+=:$location" >> ../$SESAME_ENV_FILE
-    # Also needed for installation
-    export PYTHONPATH+=:$location
     cd ..
 }
 
 # Sesame setup
 setup_sesame() {
     # Enter Sesame root
-    cd `basename sesamesim-1.5.1.tar.gz .tar.gz`
+    cd `basename $SESAME_TAR .tar.gz`
 
     # Add environment to env file.
     echo "export PATH=$INSTALLDIR/bin:\$PATH" >> ../$SESAME_ENV_FILE
