@@ -18,6 +18,7 @@ libltdl-dev
 python-networkx
 python-lxml
 python-argparse
+python-setuptools
 libxerces-c-dev
 libperl-dev
 bison
@@ -27,21 +28,18 @@ EOF
 
 print_usage() {
 cat << EOF
-Usage $0
+Installer script for the Sesame framework.
 
-This script installs the Sesame framework.
-
-Source code will be retrieved from:     $BASE_URL
-Default installation directory is:      $INSTALLDIR
-
-For additional help see also:
-https://csa.science.uva.nl/trac/dse/wiki/SesameInstallationGuide
+Download url:     		$BASE_URL
+Default installation directory: $INSTALLDIR
 
 Script Options:
     -h             Show this message
     -p DIR         Install into DIR   
     -l             List dependencies
 
+For additional help see also:
+https://csa.science.uva.nl/trac/dse/wiki/SesameInstallationGuide
 EOF
 }
 
@@ -81,6 +79,7 @@ setup_mappingmodule() {
     # TODO: How to detect lib64 install?
     python_version=`python -V 2>&1 | sed 's/Python \([0-9]\.[0-9]\).*/\1/'`
     location=$INSTALLDIR/lib/python${python_version}/site-packages
+    mkdir -p $location
 
     export PYTHONPATH+=:$location
 
