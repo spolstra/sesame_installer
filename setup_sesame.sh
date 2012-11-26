@@ -28,6 +28,12 @@ libxerces-c-dev
 libperl-dev
 bison
 flex
+
+Install these packages by typing:
+sudo apt-get install gcc g++ libtool libltdl-dev python-networkx \\
+ python-lxml python-argparse python-setuptools libxerces-c-dev \\
+ libperl-dev bison flex
+
 EOF
 }
 
